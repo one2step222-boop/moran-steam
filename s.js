@@ -7,11 +7,37 @@ const CHO="ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ";
 function cho(s){let o="";for(const c of s){const k=c.charCodeAt(0);
  if(k>=0xAC00&&k<=0xD7A3)o+=CHO[Math.floor((k-0xAC00)/588)];else if(c.trim())o+=c}return o}
 function norm(s){return (s||"").toLowerCase().replace(/[\s:·\-–—'’!?,\.]/g,"")}
-function score(it,q,qc){const e=norm(it.e),y=norm(it.y),c=(it.c||"").replace(/\s/g,"");
+/* 음차는 사람마다 다르게 적는다 — Trine 을 우리는 '트리니'로 만들었는데 찾는 사람은
+   '트라인'이라 친다. 자모로 풀어 비교하면 이런 차이가 한두 글자로 줄어 잡힌다. */
+const JA="ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ";
+const MO="ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ";
+const JONG=["","ㄱ","ㄲ","ㄳ","ㄴ","ㄵ","ㄶ","ㄷ","ㄹ","ㄺ","ㄻ","ㄼ","ㄽ","ㄾ","ㄿ","ㅀ","ㅁ",
+"ㅂ","ㅄ","ㅅ","ㅆ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
+function jamo(s){let o="";for(const ch of s||""){const k=ch.charCodeAt(0);
+ if(k>=0xAC00&&k<=0xD7A3){const i=k-0xAC00;
+  o+=JA[Math.floor(i/588)]+MO[Math.floor((i%588)/28)]+JONG[i%28]}
+ else o+=ch}
+ return o}
+function dist(a,b,cap){ /* 편집거리. cap 을 넘으면 일찍 포기한다 */
+ if(Math.abs(a.length-b.length)>cap)return cap+1;
+ let prev=[...Array(b.length+1).keys()];
+ for(let i=1;i<=a.length;i++){const cur=[i];let best=i;
+  for(let j=1;j<=b.length;j++){
+   const v=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1));
+   cur[j]=v;if(v<best)best=v}
+  if(best>cap)return cap+1;prev=cur}
+ return prev[b.length]}
+function score(it,q,qc,qj){const e=norm(it.e),y=norm(it.y),c=(it.c||"").replace(/\s/g,"");
  if(e===q||y===q)return 100;
  if(e.startsWith(q)||y.startsWith(q))return 80;
  if(e.includes(q)||y.includes(q))return 60;
  if(qc.length>=2&&c.includes(qc))return 40;
+ // 자모로 풀어 앞부분만 비교. 질의가 짧을수록 허용 오차를 좁힌다.
+ if(qj.length>=4&&it.y){
+   const yj=jamo(norm(it.y)).slice(0,qj.length+2);
+   const cap=qj.length<=6?1:(qj.length<=10?2:3);
+   if(dist(qj,yj.slice(0,qj.length),cap)<=cap)return 34;
+ }
  return 0}
 /* 검색 기록 — 로그인 없이 이 브라우저에만 남는다. 서버로 아무것도 안 보낸다. */
 function recent(){try{return JSON.parse(localStorage.getItem(RK)||'[]')}catch(e){return[]}}
@@ -27,7 +53,8 @@ function render(){const inp=document.getElementById('q');if(!inp)return;
  if(!q){box.style.display='none';return}
  if(!IDX){box.style.display='block';box.innerHTML='<div class="no">불러오는 중…</div>';return}
  const qc=cho(inp.value).replace(/\s/g,"");
- const hit=IDX.map(it=>[score(it,q,qc),it]).filter(x=>x[0]>0)
+ const qj=jamo(q);
+ const hit=IDX.map(it=>[score(it,q,qc,qj),it]).filter(x=>x[0]>0)
   .sort((a,b)=>b[0]-a[0]||b[1].d-a[1].d||b[1].o-a[1].o).slice(0,12);
  if(!hit.length){box.style.display='block';
   box.innerHTML='<div class="no">찾는 게임이 없습니다. 영문 제목으로도 해보세요.</div>';return}

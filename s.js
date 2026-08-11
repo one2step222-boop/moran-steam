@@ -36,7 +36,7 @@ function score(it,q,qc,qj){const e=norm(it.e),y=norm(it.y),c=(it.c||"").replace(
  if(qj.length>=4&&it.y){
    const yj=jamo(norm(it.y)).slice(0,qj.length+2);
    const cap=qj.length<=6?1:(qj.length<=10?2:3);
-   if(dist(qj,yj.slice(0,qj.length),cap)<=cap)return 34;
+   if(dist(qj,yj.slice(0,qj.length),cap)<=cap)return 45;
  }
  return 0}
 /* 검색 기록 — 로그인 없이 이 브라우저에만 남는다. 서버로 아무것도 안 보낸다. */

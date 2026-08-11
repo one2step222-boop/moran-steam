@@ -31,7 +31,10 @@ function score(it,q,qc,qj){const e=norm(it.e),y=norm(it.y),c=(it.c||"").replace(
  if(e===q||y===q)return 100;
  if(e.startsWith(q)||y.startsWith(q))return 80;
  if(e.includes(q)||y.includes(q))return 60;
- if(qc.length>=2&&c.includes(qc))return 40;
+ /* 초성은 앞에서부터 맞을 때만 세게 본다. '림보'의 ㄹㅂ 을 부분일치로 허용하면
+    음차 어딘가에 ㄹ...ㅂ 이 있는 게임이 전부 걸린다(2026-08-11 실측). */
+ if(qc.length>=2&&c.startsWith(qc))return 55;
+ if(qc.length>=3&&c.includes(qc))return 25;
  // 자모로 풀어 앞부분만 비교. 질의가 짧을수록 허용 오차를 좁힌다.
  if(qj.length>=4&&it.y){
    const yj=jamo(norm(it.y.split(" ").slice(0,3).join(""))).slice(0,qj.length+2);

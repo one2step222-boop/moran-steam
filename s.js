@@ -40,7 +40,19 @@ function render(){const inp=document.getElementById('q');if(!inp)return;
    remember(a.dataset.n,a.dataset.a)));}
 function go(ev){ev.preventDefault();const a=document.querySelector('#sr a[data-a]');
  if(a){remember(a.dataset.n,a.dataset.a);location.href=a.href}return false}
+/* 집계 — 개인정보는 안 보낸다. 어느 페이지가 몇 번 열렸는지, 어떤 상품이 눌렸는지만.
+   정적 사이트라 서버 로그가 없어서 이게 유일한 유입 계측이다. */
+const TRK=(document.querySelector('meta[name=trk]')||{}).content||'';
+function sid(){let s=sessionStorage.getItem('ssj_s');
+ if(!s){s=Math.random().toString(36).slice(2,10);sessionStorage.setItem('ssj_s',s)}return s}
+function beat(path,params){if(!TRK)return;
+ const q=new URLSearchParams({s:sid(),...params}).toString();
+ const u=`${TRK}${path}?${q}`;
+ if(navigator.sendBeacon)navigator.sendBeacon(u);else new Image().src=u}
 document.addEventListener('DOMContentLoaded',()=>{
+ beat('/v',{p:'steam',r:(document.referrer||'direct').slice(0,60)});
+ document.querySelectorAll('a[rel~="sponsored"]').forEach(a=>a.addEventListener('click',()=>
+   beat('/c',{i:a.dataset.sub||'sd',n:(a.dataset.pn||'').slice(0,50)})));
  drawRecent();
  const g=document.body.dataset.appid,gn=document.body.dataset.gname;
  if(g&&gn)remember(gn,g);            /* 게임 페이지를 열면 그것도 기록에 남긴다 */

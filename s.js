@@ -38,7 +38,14 @@ function score(it,q,qc,qj){const e=norm(it.e),y=norm(it.y),c=(it.c||"").replace(
    const cap=qj.length<=6?1:(qj.length<=10?2:3);
    if(dist(qj,yj.slice(0,qj.length),cap)<=cap)return 45;
  }
+ /* 음차가 어긋나는 건 거의 모음 추측 탓이다 — Trine 을 우리는 '트리니'로 냈는데
+    찾는 사람은 '트라인'이라 친다. 자음만 남기면 ㅌㄹㄴ vs ㅌㄹㅇㄴ 로 붙는다. */
+ if(it.y){
+   const qk=skel(q), yk=skel(norm(it.y));
+   if(qk.length>=3&&yk&&dist(qk,yk.slice(0,qk.length+1),1)<=1)return 38;
+ }
  return 0}
+function skel(s){return jamo(s).split("").filter(ch=>JA.indexOf(ch)>=0).join("")}
 /* 검색 기록 — 로그인 없이 이 브라우저에만 남는다. 서버로 아무것도 안 보낸다. */
 function recent(){try{return JSON.parse(localStorage.getItem(RK)||'[]')}catch(e){return[]}}
 function remember(name,a){if(!name)return;

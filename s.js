@@ -27,14 +27,19 @@ function dist(a,b,cap){ /* 편집거리. cap 을 넘으면 일찍 포기한다 *
    cur[j]=v;if(v<best)best=v}
   if(best>cap)return cap+1;prev=cur}
  return prev[b.length]}
+let CHOQ=false;      /* 이번 질의가 자음만으로 이뤄졌는가 */
 function score(it,q,qc,qj){const e=norm(it.e),y=norm(it.y),c=(it.c||"").replace(/\s/g,"");
  if(e===q||y===q)return 100;
  if(e.startsWith(q)||y.startsWith(q))return 80;
  if(e.includes(q)||y.includes(q))return 60;
- /* 초성은 앞에서부터 맞을 때만 세게 본다. '림보'의 ㄹㅂ 을 부분일치로 허용하면
-    음차 어딘가에 ㄹ...ㅂ 이 있는 게임이 전부 걸린다(2026-08-11 실측). */
- if(qc.length>=2&&c.startsWith(qc))return 55;
- if(qc.length>=3&&c.includes(qc))return 25;
+ /* 초성 검색은 '자음만 쳤을 때' 쓰는 기능이다. '림보'처럼 글자를 다 친 질의에까지
+    적용하면 초성 ㄹㅂ 으로 시작하는 게임이 전부 위로 올라와 정작 LIMBO 가 묻힌다
+    (2026-08-11 실측). 자음만 친 질의일 때만 쓴다. */
+ if(CHOQ){
+   if(c.startsWith(qc))return 70;
+   if(qc.length>=3&&c.includes(qc))return 45;
+   return 0;
+ }
  // 자모로 풀어 앞부분만 비교. 질의가 짧을수록 허용 오차를 좁힌다.
  if(qj.length>=4&&it.y){
    const yj=jamo(norm(it.y.split(" ").slice(0,3).join(""))).slice(0,qj.length+2);
@@ -66,6 +71,7 @@ function render(){const inp=document.getElementById('q');if(!inp)return;
  if(!IDX){box.style.display='block';box.innerHTML='<div class="no">불러오는 중…</div>';return}
  const qc=cho(inp.value).replace(/\s/g,"");
  const qj=jamo(q);
+ CHOQ=/^[ㄱ-ㅎ]+$/.test(inp.value.replace(/\s/g,""));
  const hit=IDX.map(it=>[score(it,q,qc,qj),it]).filter(x=>x[0]>0)
   .sort((a,b)=>b[0]-a[0]||b[1].d-a[1].d||b[1].o-a[1].o).slice(0,12);
  if(!hit.length){box.style.display='block';

@@ -140,6 +140,21 @@ border:1px solid #28374d;border-radius:13px;padding:16px 18px}
 .rc a{border-color:#2c4360;color:#b8c3d2}
 .rc:empty{display:none}
 .rl{font-size:12px;color:var(--mu);align-self:center;margin-right:2px}
+.tags{margin-top:16px;display:flex;gap:7px;justify-content:center;flex-wrap:wrap}
+.tags a{font-size:13px;color:#cfe0f2;background:#18222f;border:1px solid #2a3b4f;
+border-radius:8px;padding:6px 13px;font-weight:600}
+.tags a:hover{border-color:var(--ac);color:#fff}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:11px}
+.tcard{background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:14px 15px}
+.tcard:hover{border-color:var(--ac)}
+.tcard b{display:block;font-size:16px}
+.tcard span{display:block;color:var(--mu);font-size:12.5px;margin-top:4px}
+.tcard em{display:block;font-style:normal;color:var(--gd);font-size:13px;font-weight:700;margin-top:5px}
+.thead{padding:34px 20px 8px;max-width:1440px;margin:0 auto;text-align:center}
+.thead h1{font-size:clamp(22px,4vw,34px);margin:0}
+.thead p{color:var(--mu);font-size:14px;margin:9px 0 0}
+.again span a{color:var(--ac);margin-right:11px;font-size:13px}
+.meta a{color:#9fc6e8}.meta a:hover{color:var(--ac)}
 .warn{background:#4a3a12;border:1px solid #6b551b;color:#ffd77a;padding:10px 14px;
 border-radius:10px;font-size:13px;margin-bottom:14px}
 

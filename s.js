@@ -29,6 +29,8 @@ function dist(a,b,cap){ /* 편집거리. cap 을 넘으면 일찍 포기한다 *
  return prev[b.length]}
 let CHOQ=false;      /* 이번 질의가 자음만으로 이뤄졌는가 */
 function score(it,q,qc,qj){const e=norm(it.e),y=norm(it.y),c=(it.c||"").replace(/\s/g,"");
+ if((it.al||[]).some(a=>norm(a)===q))return 120;
+ if((it.al||[]).some(a=>norm(a).startsWith(q)))return 95;
  if(e===q||y===q)return 100;
  if(e.startsWith(q)||y.startsWith(q))return 80;
  if(e.includes(q)||y.includes(q))return 60;

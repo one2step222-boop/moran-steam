@@ -34,14 +34,16 @@ function score(it,q,qc,qj){const e=norm(it.e),y=norm(it.y),c=(it.c||"").replace(
  if(qc.length>=2&&c.includes(qc))return 40;
  // 자모로 풀어 앞부분만 비교. 질의가 짧을수록 허용 오차를 좁힌다.
  if(qj.length>=4&&it.y){
-   const yj=jamo(norm(it.y)).slice(0,qj.length+2);
+   const yj=jamo(norm(it.y.split(" ").slice(0,3).join(""))).slice(0,qj.length+2);
    const cap=qj.length<=6?1:(qj.length<=10?2:3);
    if(dist(qj,yj.slice(0,qj.length),cap)<=cap)return 45;
  }
  /* 음차가 어긋나는 건 거의 모음 추측 탓이다 — Trine 을 우리는 '트리니'로 냈는데
     찾는 사람은 '트라인'이라 친다. 자음만 남기면 ㅌㄹㄴ vs ㅌㄹㅇㄴ 로 붙는다. */
  if(it.y){
-   const qk=skel(q), yk=skel(norm(it.y));
+   /* 부제까지 넣으면 골격이 오염된다 — '트리니 5 클라크워크 컨스피러시' 전체를 쓰면
+      ㅌㄹㄴㅋㄹ 이 되어 안 붙는다. 앞 두 낱말만 본다. */
+   const qk=skel(q), yk=skel(norm(it.y.split(" ").slice(0,2).join("")));
    if(qk.length>=3&&yk&&dist(qk,yk.slice(0,qk.length+1),1)<=1)return 38;
  }
  return 0}

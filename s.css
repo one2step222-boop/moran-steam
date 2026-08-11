@@ -180,6 +180,14 @@ padding:8px 10px;border-bottom:1px solid var(--bd)}
 .dtab em.best{background:#14512f;color:#6dfaa8}.dtab em.live{background:#5a4413;color:var(--yl)}
 .dtab .src{font-style:normal;color:#5f6a7d;font-size:11px;margin-left:7px}
 .thin{color:var(--mu);font-size:13px}
+.live{display:inline-block;margin-top:7px;margin-right:8px;font-size:12.5px;color:#8fe6b0;
+background:#14351f;border:1px solid #1e5233;border-radius:999px;padding:3px 11px}
+.atab{width:100%;border-collapse:collapse;margin-top:10px;font-size:13.5px}
+.atab td{padding:10px;border-bottom:1px solid #1b212c;vertical-align:top}
+.atab tr:hover td{background:#151b25}
+.atab .ap{color:var(--yl);font-weight:800;width:66px;white-space:nowrap}
+.atab b{display:block}.atab span{display:block;color:var(--mu);font-size:12.5px;margin-top:2px}
+.atab .hid{color:#7a6a3f;font-style:italic}
 
 .steps{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px}
 .steps li{background:var(--pn);border:1px solid var(--bd);border-left:3px solid #2c3340;

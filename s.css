@@ -148,6 +148,7 @@ border-radius:15px;padding:20px}
 .lows>div{flex:1;min-width:140px}
 .lows span{display:block;color:var(--mu);font-size:12.5px}
 .lows b{font-size:18px}.lows em{font-style:normal;color:var(--gd);font-size:12.5px;margin-left:6px}
+.lows i{font-style:normal;color:#5f6a7d;font-size:11px}
 .prob{margin-top:15px;padding-top:14px;border-top:1px solid var(--bd);
 display:flex;gap:11px;align-items:baseline;flex-wrap:wrap}
 .prob b{font-size:32px;color:var(--ac);line-height:1}.prob span{font-size:14px}

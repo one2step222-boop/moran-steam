@@ -148,18 +148,6 @@ border:1px solid #28374d;border-radius:13px;padding:16px 18px}
 .rc a{border-color:#2c4360;color:#b8c3d2}
 .rc:empty{display:none}
 .rl{font-size:12px;color:var(--mu);align-self:center;margin-right:2px}
-/* 스팀 스토어 상단 장르 내비를 따랐다 — 짙은 띠에 항목이 나란히, 옆에 개수.
-   처음 오는 사람이 이미 아는 모양이라 설명이 필요 없다. */
-.catbar{max-width:760px;margin:14px auto 0;display:flex;flex-wrap:wrap;
-background:#141b26;border:1px solid #26313f;border-radius:10px;overflow:hidden}
-.catbar a{flex:1 1 auto;display:flex;align-items:baseline;justify-content:center;gap:6px;
-padding:10px 12px;border-right:1px solid #26313f;font-size:13.5px;color:#c3d2e2;
-white-space:nowrap}
-.catbar a:last-child{border-right:0}
-.catbar a:hover{background:#1d2937;color:#fff}
-.catbar b{font-weight:600}
-.catbar span{font-size:11.5px;color:var(--gd);font-weight:700}
-.catbar span::before{content:"";}
 .thead{padding:34px 20px 8px;max-width:1440px;margin:0 auto;text-align:center}
 .thead h1{font-size:clamp(22px,4vw,34px);margin:0}
 .thead p{color:var(--mu);font-size:14px;margin:9px 0 0}
@@ -297,17 +285,21 @@ color:#fff;font-size:13px;font-weight:700;padding:7px 13px;border-radius:9px}
 .yti{width:17px;height:17px;fill:#fff}.yti .tri{fill:#e0322a}
 .ytb:hover .yti .tri{fill:#f5433b}
 .snav{background:#0e131b;border-bottom:1px solid var(--bd)}
-.snavin{max-width:1440px;margin:0 auto;padding:0 20px;display:flex;gap:2px;
-overflow-x:auto;scrollbar-width:none}
+/* ★넓은 화면에서는 overflow 를 걸면 안 된다. 걸어놨더니 카테고리 메뉴가 띠 안쪽으로
+   잘려서 아예 안 보였다(2026-08-12 실측). 좁을 때만 가로 스크롤로 바꾼다. */
+.snavin{max-width:1440px;margin:0 auto;padding:0 20px;display:flex;gap:2px}
 .snavin::-webkit-scrollbar{display:none}
-.snavin a{padding:11px 14px;font-size:13.5px;color:#9fadbf;white-space:nowrap;
-border-bottom:2px solid transparent}
+.snavin a{display:flex;align-items:center;padding:11px 14px;font-size:13.5px;color:#9fadbf;
+white-space:nowrap;border-bottom:2px solid transparent}
 .snavin a:hover{color:var(--tx)}
 .snavin a.on{color:#fff;border-bottom-color:var(--ac);font-weight:600}
 /* 장르 메뉴 — details 라 자바스크립트 없이도 열린다(모바일에서 탭 한 번) */
-.ndrop{position:relative;flex:none}
-.ndrop summary{list-style:none;cursor:pointer;padding:11px 14px;font-size:13.5px;
-color:#9fadbf;white-space:nowrap;border-bottom:2px solid transparent}
+/* ★margin:0 이 필요하다. 게임 페이지의 details(원문 보기)에 걸어둔 margin-top:10px 이
+   여기까지 와서 카테고리만 10px 아래로 내려앉아 있었다(2026-08-12 실측). */
+.ndrop{position:relative;flex:none;display:flex;margin:0}
+.ndrop summary{display:flex;align-items:center;list-style:none;cursor:pointer;
+padding:11px 14px;font-size:13.5px;color:#9fadbf;white-space:nowrap;
+border-bottom:2px solid transparent}
 .ndrop summary::-webkit-details-marker{display:none}
 .ndrop summary::after{content:"▾";margin-left:5px;font-size:11px}
 .ndrop summary:hover{color:var(--tx)}
@@ -319,7 +311,6 @@ box-shadow:0 16px 44px rgba(0,0,0,.55);display:grid;grid-template-columns:1fr 1f
 padding:8px 11px;border-radius:8px;font-size:13px;color:#c3d2e2;white-space:nowrap}
 .ndmenu a:hover{background:#2a3342;color:#fff}
 .ndmenu span{font-size:11.5px;color:var(--gd);font-weight:700}
-.ndall{grid-column:1/-1;border-top:1px solid var(--bd);margin-top:4px;color:var(--ac)!important}
 
 /* 커버리지 — 우리가 세는 숫자가 전체 몇 개 중 몇 개인지 */
 .covline{margin:10px 0 0;font-size:12.5px;color:var(--mu);line-height:1.7;
@@ -470,6 +461,10 @@ padding:6px 12px;font-size:12.5px;cursor:pointer}
 
 /* 모바일에선 사이드가 DOM 순서대로 본문 위에 얹혀 첫 화면이 통째로 광고가 된다
    (2026-08-11 실측). order 로 본문을 먼저 세우고 상품은 가로 스크롤로 눕힌다. */
+@media(max-width:1080px){
+/* 항목이 화면보다 길어지는 구간 — 띠는 가로 스크롤, 메뉴는 화면에 고정해 안 잘리게 */
+.snavin{overflow-x:auto;scrollbar-width:none}
+.ndmenu{position:fixed;left:8px;right:8px;top:auto;min-width:0}}
 @media(max-width:900px){
 .eph{grid-template-columns:150px minmax(0,1fr);gap:12px}.eph img{width:150px}
 .eph b{font-size:14px}
@@ -507,15 +502,12 @@ padding:6px 12px;font-size:12.5px;cursor:pointer}
 scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .hnav::-webkit-scrollbar{display:none}
 .hnav a{white-space:nowrap}
-.catbar{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
-.catbar::-webkit-scrollbar{display:none}
-.catbar a{flex:0 0 auto;padding:9px 13px}
 .shero .sub{font-size:14px;margin-bottom:18px}
 .hstat{font-size:12px;margin-top:13px}
 .vct{font-size:12.5px;min-height:34px}.vcm{font-size:11.5px}
 .snavin{padding:0 10px}.snavin a{padding:10px 11px;font-size:13px}
 .ndrop summary{padding:10px 11px;font-size:13px}
-.ndmenu{position:fixed;left:8px;right:8px;top:auto;min-width:0;grid-template-columns:1fr 1fr}
+.ndmenu{grid-template-columns:1fr 1fr}
 .rrow2{grid-template-columns:1fr;gap:9px;padding:13px 14px}
 .rnum{justify-self:start;padding:5px 12px;font-size:14px}
 .calc p{font-size:13.5px}

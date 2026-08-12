@@ -65,8 +65,11 @@ function remember(name,a){if(!name)return;
  try{localStorage.setItem(RK,JSON.stringify(r.slice(0,8)))}catch(e){}}
 function drawRecent(){const box=document.getElementById('recent');if(!box)return;
  const r=recent();if(!r.length){box.innerHTML='';return}
+ /* 지우는 버튼이 없으면 이 브라우저에 남은 기록을 본인이 못 치운다 — 남의 PC 로 본 사람도 있다 */
  box.innerHTML='<span class="rl">최근 본 게임</span>'+
-  r.map(x=>`<a href="/g/${x.a}.html">${x.n}</a>`).join('')}
+  r.map(x=>`<a href="/g/${x.a}.html">${x.n}</a>`).join('')+
+  '<button type="button" class="rclr">기록 지우기</button>'}
+function clearRecent(){try{localStorage.removeItem(RK)}catch(e){}drawRecent()}
 function render(){const inp=document.getElementById('q');if(!inp)return;
  const q=norm(inp.value),box=document.getElementById('sr');if(!box)return;
  if(!q){box.style.display='none';return}
@@ -192,6 +195,9 @@ document.addEventListener('DOMContentLoaded',()=>{
  document.querySelectorAll('a[rel~="sponsored"]').forEach(a=>a.addEventListener('click',()=>
    beat('/c',{i:a.dataset.sub||'sd',n:(a.dataset.pn||'').slice(0,50)})));
  drawRecent();
+ const rbox=document.getElementById('recent');
+ if(rbox)rbox.addEventListener('click',ev=>{
+  if(ev.target.classList.contains('rclr')){ev.preventDefault();clearRecent()}});
  const g=document.body.dataset.appid,gn=document.body.dataset.gname;
  if(g&&gn)remember(gn,g);            /* 게임 페이지를 열면 그것도 기록에 남긴다 */
  const i=document.getElementById('q');

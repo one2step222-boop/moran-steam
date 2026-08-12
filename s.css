@@ -304,6 +304,22 @@ overflow-x:auto;scrollbar-width:none}
 border-bottom:2px solid transparent}
 .snavin a:hover{color:var(--tx)}
 .snavin a.on{color:#fff;border-bottom-color:var(--ac);font-weight:600}
+/* 장르 메뉴 — details 라 자바스크립트 없이도 열린다(모바일에서 탭 한 번) */
+.ndrop{position:relative;flex:none}
+.ndrop summary{list-style:none;cursor:pointer;padding:11px 14px;font-size:13.5px;
+color:#9fadbf;white-space:nowrap;border-bottom:2px solid transparent}
+.ndrop summary::-webkit-details-marker{display:none}
+.ndrop summary::after{content:"▾";margin-left:5px;font-size:11px}
+.ndrop summary:hover{color:var(--tx)}
+.ndrop[open] summary{color:#fff;border-bottom-color:var(--ac)}
+.ndmenu{position:absolute;left:0;top:100%;z-index:40;min-width:330px;
+background:var(--pn2);border:1px solid var(--bd);border-radius:12px;padding:7px;
+box-shadow:0 16px 44px rgba(0,0,0,.55);display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.ndmenu a{display:flex;align-items:baseline;justify-content:space-between;gap:8px;
+padding:8px 11px;border-radius:8px;font-size:13px;color:#c3d2e2;white-space:nowrap}
+.ndmenu a:hover{background:#2a3342;color:#fff}
+.ndmenu span{font-size:11.5px;color:var(--gd);font-weight:700}
+.ndall{grid-column:1/-1;border-top:1px solid var(--bd);margin-top:4px;color:var(--ac)!important}
 
 /* 커버리지 — 우리가 세는 숫자가 전체 몇 개 중 몇 개인지 */
 .covline{margin:10px 0 0;font-size:12.5px;color:var(--mu);line-height:1.7;
@@ -324,6 +340,42 @@ font-size:12px;padding:2px 8px;border-radius:6px}
 .unm{font-size:13.5px;font-weight:600;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;
 -webkit-box-orient:vertical;overflow:hidden;min-height:36px}
 .urel{font-size:12px;color:var(--mu);margin-top:6px}
+
+/* 신작 한글 소개 페이지 */
+.utag2{display:inline-block;background:#1f3d57;color:#8fd0ff;font-weight:800;font-size:12.5px;
+padding:3px 10px;border-radius:7px;margin-bottom:8px}
+.nkr{display:block;color:var(--mu);font-size:14px;margin-top:5px}
+.steambtn{display:inline-block;margin-top:12px;background:linear-gradient(90deg,#1b2838,#2a475e);
+border:1px solid #3d6a8c;color:#c7e3ff;font-size:14px;font-weight:700;padding:10px 18px;
+border-radius:10px}
+.steambtn:hover{background:linear-gradient(90deg,#24384f,#356a91);color:#fff}
+.nprice{margin-top:14px;background:var(--pn);border:1px solid var(--bd);border-radius:12px;
+padding:14px 16px;display:flex;gap:12px;align-items:baseline}
+.nprice b{font-size:26px}
+.nprice em{font-style:normal;color:#6dfaa8;font-weight:700}
+.nprice.pend{color:var(--mu);font-size:13.5px}
+.tagl{display:flex;flex-wrap:wrap;gap:7px}
+.tagl span{font-size:12.5px;color:#b8c3d2;background:var(--pn);border:1px solid var(--bd);
+border-radius:999px;padding:4px 11px}
+.nsteam{margin-top:34px}
+
+/* 할인 규칙 페이지 */
+.rlist2{display:flex;flex-direction:column;gap:10px}
+.rrow2{display:grid;grid-template-columns:104px minmax(0,1fr);gap:16px;align-items:start;
+background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:14px 16px}
+.rnum{font-size:17px;font-weight:800;color:var(--ac);text-align:center;
+background:#132231;border:1px solid #26435c;border-radius:9px;padding:9px 6px}
+.rrow2 b{font-size:15px;line-height:1.45}
+.rrow2 p{margin:6px 0 0;font-size:13.5px;color:#b8c3d2;line-height:1.7}
+.calc{background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:15px 17px}
+.calc p{margin:0 0 12px;font-size:14px;line-height:1.8;color:#c3ccd9}
+.calc p:last-child{margin-bottom:0}
+.calc b{color:#cfe0f2}
+.qa{background:var(--pn);border:1px solid var(--bd);border-left:3px solid #2c4360;
+border-radius:10px;padding:13px 16px;margin-bottom:9px}
+.qa b{font-size:14.5px}
+.qa p{margin:7px 0 0;font-size:13.5px;color:#b8c3d2;line-height:1.75}
+.qa a{color:var(--ac)}
 
 /* 영상 한 편 페이지 */
 .vhead2{max-width:1440px;margin:0 auto;padding:26px 20px 0;display:grid;
@@ -462,6 +514,11 @@ scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .hstat{font-size:12px;margin-top:13px}
 .vct{font-size:12.5px;min-height:34px}.vcm{font-size:11.5px}
 .snavin{padding:0 10px}.snavin a{padding:10px 11px;font-size:13px}
+.ndrop summary{padding:10px 11px;font-size:13px}
+.ndmenu{position:fixed;left:8px;right:8px;top:auto;min-width:0;grid-template-columns:1fr 1fr}
+.rrow2{grid-template-columns:1fr;gap:9px;padding:13px 14px}
+.rnum{justify-self:start;padding:5px 12px;font-size:14px}
+.calc p{font-size:13.5px}
 .unm{font-size:12.5px;min-height:34px}.urel{font-size:11.5px}
 .covline{font-size:12px;padding:10px 12px}
 .ytb{font-size:12px;padding:6px 10px}.yti{width:15px;height:15px}

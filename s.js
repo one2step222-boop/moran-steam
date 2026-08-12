@@ -208,4 +208,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  const qp=new URLSearchParams(location.search).get('q');
  if(qp){i.value=qp;load().then(()=>render());i.focus();}
  document.addEventListener('click',e=>{if(!e.target.closest('.bigsearch')&&!e.target.closest('.sb')){
-  const b=document.getElementById('sr');if(b)b.style.display='none'}})});
+  const b=document.getElementById('sr');if(b)b.style.display='none'}
+  /* 장르 메뉴는 details 라 저절로 안 닫힌다 — 바깥을 누르면 닫는다 */
+  if(!e.target.closest('.ndrop'))document.querySelectorAll('.ndrop[open]')
+   .forEach(d=>d.removeAttribute('open'))});});

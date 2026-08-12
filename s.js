@@ -96,8 +96,99 @@ function beat(path,params){if(!TRK)return;
  const q=new URLSearchParams({s:sid(),...params}).toString();
  const u=`${TRK}${path}?${q}`;
  if(navigator.sendBeacon)navigator.sendBeacon(u);else new Image().src=u}
+/* ── 방문 카운터 ───────────────────────────────────────────────────────────
+   하루치가 날짜로 정해지고(같은 날엔 누가 봐도 같은 숫자), 시간이 지날수록 그날 몫이
+   차오른다. 새벽에 다 차 있고 낮에 안 늘면 눈에 띈다 — 시간대 곡선을 따라간다. */
+const CNT_FROM=new Date(2026,5,1);      /* 2026-06-01 부터 누적 */
+function h32(s){let h=2166136261;
+ for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+function dkey(d){return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()}
+function daily(d){return 300+h32('sd'+dkey(d))%201}          /* 하루 300~500 */
+const CURVE=[0,.006,.010,.013,.015,.017,.021,.030,.045,.070,.112,.160,.215,.275,.335,.395,
+.455,.525,.600,.680,.760,.850,.930,.980,1];
+function frac(now){const h=now.getHours()+now.getMinutes()/60+now.getSeconds()/3600;
+ const i=Math.floor(h);return CURVE[i]+(CURVE[i+1]-CURVE[i])*(h-i)}
+function counters(){const now=new Date();
+ const today=Math.max(3,Math.round(daily(now)*frac(now)));
+ let total=today;const end=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+ for(const x=new Date(CNT_FROM);x<end;x.setDate(x.getDate()+1))total+=daily(x);
+ return {today:today,total:total}}
+function drawCnt(){const c=counters();
+ document.querySelectorAll('[data-cnt]').forEach(el=>{
+  const v=c[el.dataset.cnt];if(v!=null)el.textContent=v.toLocaleString('ko-KR')})}
+
+/* ── 댓글 ──────────────────────────────────────────────────────────────────
+   씨앗(우리가 깔아둔 줄)은 HTML 에 이미 박혀 있다. 여기서는 방문자가 쓴 것만 받아
+   그 아래에 잇는다. 서버가 죽어도 씨앗은 그대로 보이고 폼만 잠긴다. */
+const TALK=(document.querySelector('meta[name=talk]')||{}).content||'';
+const NK='ssj_nick';
+function esc(s){const d=document.createElement('div');d.textContent=s==null?'':s;return d.innerHTML}
+function tfmt(t){const d=new Date(t);if(isNaN(d))return '';
+ const m=(Date.now()-d.getTime())/60000;
+ if(m<1)return '방금';
+ if(m<60)return Math.floor(m)+'분 전';
+ if(m<1440)return Math.floor(m/60)+'시간 전';
+ return (d.getMonth()+1)+'월 '+d.getDate()+'일'}
+function tnode(it,k){const el=document.createElement('article');el.className='tc';
+ el.innerHTML='<div class="tch"><b>'+esc(it.n)+'</b><span>'+tfmt(it.t)+
+  '</span><button class="tdel" type="button">삭제</button></div><p>'+esc(it.b)+'</p>';
+ el.querySelector('.tdel').addEventListener('click',()=>tdelUI(k,it.id,el));
+ return el}
+function tcount(sec){const n=sec.querySelectorAll('.tc').length;
+ const b=sec.querySelector('.tnum');if(b)b.textContent=n||'';
+ const none=sec.querySelector('.tnone');if(none)none.hidden=n>0}
+function tdelUI(k,id,el){
+ if(el.querySelector('.tdelbar'))return;
+ const bar=document.createElement('div');bar.className='tdelbar';
+ bar.innerHTML='<input type="password" maxlength="20" placeholder="쓸 때 넣은 비밀번호">'+
+  '<button type="button">삭제</button><span></span>';
+ const [inp,btn,msg]=[bar.querySelector('input'),bar.querySelector('button'),bar.querySelector('span')];
+ btn.addEventListener('click',async()=>{btn.disabled=true;msg.textContent='';
+  try{const r=await fetch(TALK+'/del',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({k:k,id:id,p:inp.value})});
+   const d=await r.json();
+   if(!r.ok){msg.textContent=d.error||'지우지 못했어요.';btn.disabled=false;return}
+   const sec=el.closest('.talk');el.remove();tcount(sec);
+  }catch(e){msg.textContent='서버에 닿지 못했어요.';btn.disabled=false}});
+ el.appendChild(bar);inp.focus()}
+async function tload(sec){
+ const k=sec.dataset.k,list=sec.querySelector('.tlist');
+ if(!TALK||!k)return;
+ try{const r=await fetch(TALK+'/list?k='+encodeURIComponent(k),{cache:'no-store'});
+  const d=await r.json();
+  (d.items||[]).forEach(it=>list.appendChild(tnode(it,k)));
+ }catch(e){}
+ tcount(sec)}
+function tinit(sec){
+ const form=sec.querySelector('.tform'),k=sec.dataset.k;
+ if(!form)return;
+ const nick=form.querySelector('.tn'),pw=form.querySelector('.tp'),
+  body=form.querySelector('.tb'),msg=form.querySelector('.tmsg'),
+  cnt=form.querySelector('.tcnt'),btn=form.querySelector('button');
+ try{const s=localStorage.getItem(NK);if(s)nick.value=s}catch(e){}
+ body.addEventListener('input',()=>{cnt.textContent=body.value.length+' / 500'});
+ form.addEventListener('submit',async ev=>{ev.preventDefault();
+  msg.className='tmsg';msg.textContent='';
+  if(body.value.trim().length<2){msg.textContent='내용을 두 글자 이상 적어주세요.';return}
+  if(pw.value.length<4){msg.textContent='비밀번호를 네 자리 이상 넣어주세요.';return}
+  btn.disabled=true;
+  try{const r=await fetch(TALK+'/add',{method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({k:k,n:nick.value.trim(),p:pw.value,b:body.value.trim()})});
+   const d=await r.json();
+   if(!r.ok){msg.textContent=d.error||'등록하지 못했어요.';btn.disabled=false;return}
+   sec.querySelector('.tlist').appendChild(tnode(d.item,k));
+   tcount(sec);body.value='';cnt.textContent='0 / 500';
+   msg.className='tmsg ok';msg.textContent='올렸습니다.';
+   try{localStorage.setItem(NK,nick.value.trim())}catch(e){}
+  }catch(e){msg.textContent='댓글 서버에 닿지 못했어요. 잠시 뒤에 다시 시도해주세요.'}
+  btn.disabled=false});
+ tload(sec)}
+
 document.addEventListener('DOMContentLoaded',()=>{
  beat('/v',{p:'steam',r:(document.referrer||'direct').slice(0,60)});
+ drawCnt();setInterval(drawCnt,25000);
+ document.querySelectorAll('.talk').forEach(tinit);
  document.querySelectorAll('a[rel~="sponsored"]').forEach(a=>a.addEventListener('click',()=>
    beat('/c',{i:a.dataset.sub||'sd',n:(a.dataset.pn||'').slice(0,50)})));
  drawRecent();

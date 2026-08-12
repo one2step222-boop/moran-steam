@@ -238,7 +238,8 @@ padding:8px 10px;border-bottom:1px solid var(--bd)}
 .dtab .pc{color:var(--gd);font-weight:700}
 .dtab .pw b{font-weight:700}.dtab .pw s{color:var(--mu);margin-left:7px;font-size:12px}
 .dtab .mk{text-align:right}
-.dtab em{font-style:normal;font-size:11px;padding:1px 7px;border-radius:5px;margin-left:5px}
+.dtab em{font-style:normal;font-size:11px;padding:1px 7px;border-radius:5px;margin-left:5px;
+white-space:nowrap;display:inline-block}
 .dtab em.best{background:#14512f;color:#6dfaa8}.dtab em.live{background:#5a4413;color:var(--yl)}
 .dtab .src{font-style:normal;color:#5f6a7d;font-size:11px;margin-left:7px}
 .thin{color:var(--mu);font-size:13px}
@@ -409,6 +410,7 @@ padding:6px 12px;font-size:12.5px;cursor:pointer}
 .shots{grid-template-columns:repeat(2,1fr)}
 /* 좁은 화면에서 줄이 이상하게 꺾이던 자리들 (2026-08-12) */
 .hd{padding:9px 12px;gap:10px}
+.wo{display:none}
 .logo{font-size:15px}
 .hnav{gap:13px;font-size:12.5px;flex-wrap:nowrap;overflow-x:auto;
 scrollbar-width:none;-webkit-overflow-scrolling:touch}

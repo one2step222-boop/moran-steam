@@ -197,5 +197,9 @@ document.addEventListener('DOMContentLoaded',()=>{
  const i=document.getElementById('q');
  if(!i)return;i.addEventListener('focus',load);
  i.addEventListener('input',()=>{load();render()});
+ /* ?q= 로 들어온 검색어를 실제로 처리한다. 홈의 SearchAction 이 이 주소를 검색
+    진입점으로 신고하는데, 안 받으면 신고가 거짓이 되고 색인에서 손해만 본다. */
+ const qp=new URLSearchParams(location.search).get('q');
+ if(qp){i.value=qp;load().then(()=>render());i.focus();}
  document.addEventListener('click',e=>{if(!e.target.closest('.bigsearch')&&!e.target.closest('.sb')){
   const b=document.getElementById('sr');if(b)b.style.display='none'}})});

@@ -189,7 +189,15 @@ function tinit(sec){
  tload(sec)}
 
 document.addEventListener('DOMContentLoaded',()=>{
- beat('/v',{p:'steam',r:(document.referrer||'direct').slice(0,60)});
+ /* ★유입 표시(2026-08-14). document.referrer 만 믿으면 유튜브·인스타 앱에서 온 사람이
+    전부 'direct' 로 뭉친다 — 실제로 14일 유입 105 중 57 이 direct 였고 유튜브는 0 이었다.
+    영상에 문을 달아놓고 그 문이 열렸는지를 못 재는 상태였다. ?s=yt 같은 표시를 링크에
+    싣고(cta.py), 여기서 그걸 우선 읽는다. 한 번 읽은 표시는 세션에 남겨 둔다 —
+    두 번째 페이지부터는 쿼리가 안 붙기 때문이다. */
+ const _q=new URLSearchParams(location.search).get('s');
+ if(_q)sessionStorage.setItem('ssj_src',_q.slice(0,16));
+ const _src=sessionStorage.getItem('ssj_src')||'';
+ beat('/v',{p:'steam',r:(_src?'src:'+_src:(document.referrer||'direct')).slice(0,60)});
  drawCnt();setInterval(drawCnt,25000);
  document.querySelectorAll('.talk').forEach(tinit);
  document.querySelectorAll('a[rel~="sponsored"]').forEach(a=>a.addEventListener('click',()=>

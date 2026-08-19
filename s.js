@@ -197,11 +197,15 @@ document.addEventListener('DOMContentLoaded',()=>{
  const _q=new URLSearchParams(location.search).get('s');
  if(_q)sessionStorage.setItem('ssj_src',_q.slice(0,16));
  const _src=sessionStorage.getItem('ssj_src')||'';
- beat('/v',{p:'steam',r:(_src?'src:'+_src:(document.referrer||'direct')).slice(0,60)});
+ /* u = 어느 페이지가 열렸나. 게임 페이지가 3,240 개인데 이걸 안 실어 보내서
+    한 달 조회 87 이 어느 게임 것인지 못 봤다(2026-08-19). 경로만 보낸다. */
+ const _pg=location.pathname.replace(/index\.html$/,'').slice(0,80)||'/';
+ beat('/v',{p:'steam',u:_pg,r:(_src?'src:'+_src:(document.referrer||'direct')).slice(0,60)});
  drawCnt();setInterval(drawCnt,25000);
  document.querySelectorAll('.talk').forEach(tinit);
  document.querySelectorAll('a[rel~="sponsored"]').forEach(a=>a.addEventListener('click',()=>
-   beat('/c',{i:a.dataset.sub||'sd',n:(a.dataset.pn||'').slice(0,50)})));
+   beat('/c',{i:a.dataset.sub||'sd',p:'steam',u:_pg,
+              n:(a.dataset.pn||'').slice(0,50)})));
  drawRecent();
  const rbox=document.getElementById('recent');
  if(rbox)rbox.addEventListener('click',ev=>{
